@@ -43,21 +43,24 @@ public class Main {
             while (true) {
                 String s1 = o1.get(i);
                 String s2 = o2.get(i);
+                if (s1.compareTo(s2) == 0) {
+                    i++;
+                    continue;
+                }
 
-                if (s1.matches("[-+]?\\d+") & s2.matches("[-+]?\\d+")) {
+                boolean isNumber1 = s1.matches("[-+]?\\d+");
+                boolean isNumber2 = s2.matches("[-+]?\\d+");
+
+                if (isNumber1 && isNumber2) {
                     Integer i1 = Integer.parseInt(s1);
                     Integer i2 = Integer.parseInt(s2);
                     return i1.compareTo(i2);
                 }
 
-                if (s1.compareTo(s2) == 0) {
-                    i++;
-                    continue;
-                }
-                if (s1.isEmpty() || s1.equals(" ")) {
-                    return 1;
-                } else if (s2.isEmpty() || s2.equals(" ")) {
+                if (isNumber1) {
                     return -1;
+                } else if (isNumber2) {
+                    return 1;
                 } else {
                     return s1.compareTo(s2);
                 }
