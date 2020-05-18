@@ -26,6 +26,7 @@ public class Main {
 
     private static void writeFile(String path, List<List<String>> sortedData) throws IOException {
         FileWriter writer = new FileWriter(path);
+
         for (List<String> list : sortedData) {
             for (String str : list) {
                 writer.write(str + "\t");
@@ -42,6 +43,13 @@ public class Main {
             while (true) {
                 String s1 = o1.get(i);
                 String s2 = o2.get(i);
+
+                if (s1.matches("[-+]?\\d+") & s2.matches("[-+]?\\d+")) {
+                    Integer i1 = Integer.parseInt(s1);
+                    Integer i2 = Integer.parseInt(s2);
+                    return i1.compareTo(i2);
+                }
+
                 if (s1.compareTo(s2) == 0) {
                     i++;
                     continue;
