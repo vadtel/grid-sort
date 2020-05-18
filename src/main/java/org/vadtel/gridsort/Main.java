@@ -2,7 +2,6 @@ package org.vadtel.gridsort;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -22,36 +21,56 @@ public class Main {
         List<List<String>> dataList = null;
         try {
             dataList = Files.lines(Paths.get(path))
-                    .map(s -> Arrays.asList(s.split("\t")))
+                    .map(s -> Arrays.stream(s.split("\t"))
+                            .collect(Collectors.toList()))
                     .collect(Collectors.toList());
+
         } catch (IOException e) {
             System.err.println("Ошибка при чтении файла");
             System.exit(1);
         }
-        //Check
-        for (int i = 0; i < dataList.size() - 1; i++) {
-            if (dataList.get(i) != dataList.get(i + 1)) {
-                System.err.println("Данные в файле не вылидны.");
-                System.exit(1);
+        int numberOfColumns = 0;
+        //Check empty last cells
+        for (int i = 0; i < dataList.size(); i++) {
+            int size = dataList.get(i).size();
+            if (numberOfColumns < size) {
+                numberOfColumns = size;
             }
         }
+
+        //Fill empty cells
+        int dif = 0;
+        for (int i = 0; i < dataList.size(); i++) {
+            int size = dataList.get(i).size();
+            if ((dif = numberOfColumns - size) > 0) {
+                for (int j = 0; j < dif; j++) {
+                    dataList.get(i).add("");
+                }
+            }
+        }
+
         return dataList;
     }
 
-    private static void writeFile(String path, List<List<String>> sortedData){
+    private static void writeFile(String path, List<List<String>> sortedData) {
 
-        try (FileWriter writer = new FileWriter(path)){
+        try (FileWriter writer = new FileWriter(path)) {
+
             for (List<String> list : sortedData) {
-                for (String str : list) {
-                    writer.write(str + "\t");
+                int size = list.size();
+                for (int i = 0; i < size; i++) {
+                    if (i == size - 1) {
+                        writer.write(list.get(i));
+                    } else {
+                        writer.write(list.get(i) + "\t");
+                    }
                 }
                 writer.write(System.lineSeparator());
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println("Ошибка при записи файла");
             System.exit(1);
         }
-
 
 
     }
